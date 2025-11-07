@@ -12,7 +12,8 @@
 #include "config.h"
 
 static int listener_accept_loop(struct listener *listener) {
-    while (1) {
+    int status = 0;
+    while (status == 0) {
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
 
@@ -25,6 +26,7 @@ static int listener_accept_loop(struct listener *listener) {
             }
             perror("accept");
             return -1;
+            break;
         }
 
         char ip_str[INET_ADDRSTRLEN] = "desconocido";
@@ -36,7 +38,7 @@ static int listener_accept_loop(struct listener *listener) {
         printf("Conexión entrante de %s:%u\n", ip_str, ntohs(client_addr.sin_port));
         close(client_fd);
     }
-    return 0;
+    return status;
 }
 
 static int run_listener(in_port_t port){
